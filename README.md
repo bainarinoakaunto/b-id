@@ -122,3 +122,12 @@ Apps Script の「トリガー」で、関数 `cleanup` を1日1回動かすと�
 - テストサービス登録行: `kabuonrain-test | 株シミュレーター LIFE（テスト） | https://bainarinoakaunto.github.io/Online-Stk-Simu-b-id-test/ | FALSE`
 
 **重要:** `Code.gs` はこの公開リポジトリに置かず、Google Apps Scriptのプロジェクト内だけで管理してください。API_URLはApps Scriptのウェブアプリ公開後に設定します。
+
+
+## 画面の構成（新規登録・ログイン分離）
+
+- ホーム: `https://bainarinoakaunto.github.io/b-id/`
+- 新規登録: `https://bainarinoakaunto.github.io/b-id/register/`
+- ログイン: `https://bainarinoakaunto.github.io/b-id/login/`
+
+新規登録は未登録メールアドレス、ログインは登録済みメールアドレスを対象にします。これを有効にするには、最新の `Code.gs` をApps Scriptに反映して再デプロイする必要があります。新しいAPIアクションは `request_register_code` / `verify_register_code` と `request_login_code` / `verify_login_code` です。
