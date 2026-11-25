@@ -10,7 +10,7 @@
 (function () {
   // ▼ 自分の環境に合わせて書き換える
   var LOGIN_URL = 'https://bainarinoakaunto.github.io/b-id/login/';
-  var API_URL   = 'https://script.google.com/macros/s/ここにデプロイID/exec';
+  var API_URL   = 'https://script.google.com/macros/s/AKfycbxwYlQ7zvHMY9W5X4nCTytMUfYuYAlnTKwRZEjnjNGzGgdTmFyHUg7kyIDaizxU6GNs/exec';
   // ▲
 
   var KEY = 'bid_session';
