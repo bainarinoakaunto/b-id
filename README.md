@@ -48,7 +48,7 @@ GitHub Pages(画面)と Google Apps Script(サーバー側)だけで動きます
 
 ### 4. 画面とJSのURLを書き換える
 
-- `login/index.html` の `API_URL` に、手順3のURLを入れる
+- `login/index.html` と `register/index.html` の `API_URL` に、手順3のURLを入れる
 - `b-id.js` の `API_URL` に、手順3のURLを入れる
 - `b-id.js` の `LOGIN_URL` を `https://ユーザー名.github.io/b-id/login/` にする
 
