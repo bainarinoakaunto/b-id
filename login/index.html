@@ -10,7 +10,8 @@
 <div class="links">アカウントをお持ちでない方は <a id="registerLink" href="../register/">新規登録</a></div></div><p class="home"><a href="../">ホームに戻る</a></p></main><footer>© B! ID</footer>
 <script>
 var API_URL='https://script.google.com/macros/s/AKfycbxwYlQ7zvHMY9W5X4nCTytMUfYuYAlnTKwRZEjnjNGzGgdTmFyHUg7kyIDaizxU6GNs/exec';
-var redirect=new URLSearchParams(location.search).get('redirect');var step=0;\nif(redirect){document.getElementById('registerLink').href='../register/?redirect='+encodeURIComponent(redirect);}
+var redirect=new URLSearchParams(location.search).get('redirect');var step=0;
+if(redirect){document.getElementById('registerLink').href='../register/?redirect='+encodeURIComponent(redirect);}
 var form=document.getElementById('form'),email=document.getElementById('email'),code=document.getElementById('code'),box=document.getElementById('codeBox'),btn=document.getElementById('submit'),msg=document.getElementById('msg');
 document.getElementById('target').textContent=redirect?'ログイン先: '+new URL(redirect).host:'サービスから開いてください。';
 function say(s,e){msg.textContent=s;msg.className='msg'+(e?' error':'')}
