@@ -25,7 +25,7 @@ form.addEventListener('submit',function(e){
   say('登録用コードを送信しています…');
   api({action:'request_register_code',email:email.value.trim(),redirect:redirect}).then(function(r){
    if(r.ok){step=1;email.readOnly=true;box.hidden=false;code.required=true;btn.textContent='メール認証';say('認証コードをメールで送信しました。');code.focus()}
-   else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'送信できませんでした。時間をおいてお試しください。',true)
+   else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':r.error==='invalid_redirect'?'このサービスはB! IDに登録されていないか、現在無効です。運営側の設定を確認してください。':'送信できませんでした。時間をおいてお試しください。',true)
   }).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false);
  }else if(step===1){
   say('メールアドレスを確認しています…');
@@ -36,7 +36,7 @@ form.addEventListener('submit',function(e){
     email.value='';email.required=false;email.closest('.field').hidden=true;
     code.value='';code.required=false;box.hidden=true;
     bidBox.hidden=false;bid.required=true;btn.textContent='B! IDを設定して登録';say('メール認証が完了しました。希望するB! IDを設定してください。');bid.focus();
-   }else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'認証コードが違うか、有効期限が切れています。',true)
+   }else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':r.error==='invalid_redirect'?'このサービスはB! IDに登録されていないか、現在無効です。運営側の設定を確認してください。':'認証コードが違うか、有効期限が切れています。',true)
   }).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false);
  }else{
   say('B! IDを登録しています…');
