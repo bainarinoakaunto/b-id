@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B! ID | 1つのIDで、対応サービスにログイン</title>
+<meta name="description" content="B! ID は、対応するサービスに同じメールアドレスでログインできる、無料のアカウントです。パスワードは使いません。">
+<!--
+  書き換える場所
+  1. 「対応しているサービス」の一覧 (リンク先と説明)
+  2. 「よくある質問」の中の【ここに連絡先】
+  3. フッターの【ここに連絡先】
+-->
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #fff;
+    color: #222;
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    font-size: 15px;
+    line-height: 1.9;
+  }
+  a { color: #0050b3; }
+  .bar { height: 56px; padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid #ddd; }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
+  main { max-width: 680px; margin: 0 auto; padding: 40px 20px 0; }
+  h1 { margin: 0 0 16px; font-size: 28px; line-height: 1.5; }
+  h2 { margin: 56px 0 16px; padding-bottom: 8px; font-size: 20px; border-bottom: 1px solid #ccc; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 14px; padding-left: 1.4em; }
+  li { margin: 0 0 6px; }
+  .lead { font-size: 16px; }
+  .small { font-size: 13px; color: #666; }
+  dl { margin: 0; }
+  dt { margin: 0 0 2px; font-weight: 700; }
+  dd { margin: 0 0 14px; padding-left: 0; }
+  .services { list-style: none; padding: 0; margin: 0 0 14px; border-top: 1px solid #ddd; }
+  .services li { margin: 0; padding: 12px 0; border-bottom: 1px solid #ddd; }
+  .services a { font-weight: 700; }
+  .services span { display: block; font-size: 13px; color: #666; }
+  details { border-bottom: 1px solid #ddd; padding: 12px 0; }
+  details:first-of-type { border-top: 1px solid #ddd; }
+  summary { cursor: pointer; font-weight: 700; }
+  details p { margin: 10px 0 0; }
+  summary:focus-visible, a:focus-visible { outline: 3px solid #7aa7ff; outline-offset: 2px; }
+  footer { margin-top: 72px; padding: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 12px; color: #777; }
+  footer p { margin: 0 0 4px; }
+  @media (max-width: 480px) {
+    h1 { font-size: 24px; }
+    main { padding-top: 28px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar"><span class="logo">B! ID</span></header>
+
+<main>
+  <h1>1つのメールアドレスで、<br>対応サービスにログイン</h1>
+  <p class="lead">B! ID は、対応するサービスに同じメールアドレスでログインできる、無料のアカウントです。サービスごとにIDやパスワードを作る必要はありません。</p>
+
+  <h2>できること</h2>
+  <ul>
+    <li>対応サービスすべてに、同じメールアドレスでログインできます</li>
+    <li>パスワードは使いません。メールに届く認証コードだけで本人確認をします</li>
+    <li>登録も利用も無料です</li>
+  </ul>
+
+  <h2>ご利用の流れ</h2>
+  <ol>
+    <li>対応サービスを開くと、ログイン画面に移動します</li>
+    <li>メールアドレスを入力すると、6桁の認証コードが届きます</li>
+    <li>認証コードを入力すると、サービスに戻って使いはじめられます</li>
+  </ol>
+  <p class="small">はじめての方は、この手順の中で自動的に登録されます。別に登録する手続きはありません。</p>
+
+  <h2>対応しているサービス</h2>
+  <ul class="services">
+    <li><a href="https://bainarinoakaunto.github.io/Online-Stk-Simu-b-id-test/">株シミュレーター LIFE（テスト）</a><span>B! IDログインの接続テスト用ページです。オンライン機能は準備中です。</span></li>
+  </ul>
+
+  <h2 id="privacy">取得する情報について</h2>
+  <p>B! ID が取得して保存するのは、<strong>メールアドレスと登録日だけ</strong>です。不要な個人情報は取得しません。</p>
+  <dl>
+    <dt>取得しないもの</dt>
+    <dd>パスワード、名前、写真、住所、電話番号、位置情報など</dd>
+    <dt>サービスに渡す情報</dt>
+    <dd>ふつうは、B! ID が発行する識別用のIDだけです。メールアドレスは、必要なサービスにだけ渡します。</dd>
+    <dt>認証コード</dt>
+    <dd>10分だけ有効で、1回しか使えません。5回間違えると無効になります。</dd>
+    <dt>ログインの有効期間</dt>
+    <dd>最大7日間です。期間が過ぎると、もう一度ログインが必要です。</dd>
+  </dl>
+
+  <h2>よくある質問</h2>
+  <details>
+    <summary>認証コードのメールが届きません</summary>
+    <p>迷惑メールフォルダをご確認ください。それでも届かないときは、1分ほど待ってから、もう一度「認証コードを送る」を押してください。メールアドレスの入力間違いもご確認ください。</p>
+  </details>
+  <details>
+    <summary>別のスマホやパソコンでも使えますか</summary>
+    <p>使えます。使いたい端末でサービスを開き、同じメールアドレスでログインしてください。</p>
+  </details>
+  <details>
+    <summary>パスワードを忘れたときは</summary>
+    <p>B! ID にパスワードはありません。ログインのたびに、メールで認証コードをお送りします。</p>
+  </details>
+  <details>
+    <summary>登録した情報を消したいです</summary>
+    <p>【ここに連絡先】までご連絡ください。ご本人のメールアドレスを確認したうえで、登録情報とログイン情報を削除します。</p>
+  </details>
+</main>
+
+<footer>
+  <p>お問い合わせ: 【ここに連絡先】</p>
+  <p>&copy; B! ID</p>
+</footer>
+</body>
+</html>
