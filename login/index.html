@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>ログイン | B! ID</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#fff; color:#222; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif; font-size:15px; line-height:1.8; }
+  .bar { height:56px; padding:0 20px; display:flex; align-items:center; border-bottom:1px solid #ddd; }
+  .logo { font-size:20px; font-weight:700; letter-spacing:.02em; }
+  main { max-width:420px; margin:40px auto 0; padding:0 20px; }
+  h1 { margin:0 0 12px; font-size:22px; font-weight:700; }
+  .dest { margin:0 0 4px; font-size:13px; color:#666; word-break:break-all; }
+  .lead { margin:0 0 28px; font-size:14px; }
+  .field { margin:0 0 18px; }
+  label { display:block; margin:0 0 4px; font-size:14px; font-weight:700; }
+  input { display:block; width:100%; padding:12px; font:inherit; font-size:16px; color:#222; background:#fff; border:1px solid #aaa; border-radius:4px; }
+  input[readonly] { background:#f3f3f3; color:#666; }
+  #code { letter-spacing:.3em; }
+  input:focus-visible,button:focus-visible { outline:3px solid #7aa7ff; outline-offset:1px; }
+  .msg { min-height:1.8em; margin:0 0 14px; font-size:14px; color:#555; }
+  .msg.error { color:#c00; }
+  #go { display:block; width:100%; padding:14px; font:inherit; font-weight:700; color:#fff; background:#222; border:0; border-radius:4px; cursor:pointer; }
+  #go:hover { background:#000; }
+  #go:disabled { background:#999; cursor:default; }
+  #reset { display:block; margin:16px auto 0; padding:0; font:inherit; font-size:14px; color:#0050b3; background:none; border:0; text-decoration:underline; cursor:pointer; }
+  .note { margin:40px 0 0; padding-top:16px; border-top:1px solid #ddd; font-size:12px; color:#666; }
+  footer { margin:48px 0 24px; text-align:center; font-size:12px; color:#888; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<header class="bar"><span class="logo">B! ID</span></header>
+<main>
+  <h1>ログイン</h1>
+  <p class="dest">ログイン先: <span id="target">-</span></p>
+  <p class="lead">メールアドレスを入力すると、認証コードをメールでお送りします。<br>はじめての方も、同じ手順で登録されます。</p>
+  <form id="mail" novalidate>
+    <div class="field"><label for="email">メールアドレス</label><input id="email" type="email" inputmode="email" autocomplete="email" required></div>
+    <div id="codeRow" class="field" hidden><label for="code">認証コード(6桁)</label><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+    <button id="go" type="submit">認証コードを送る</button>
+    <button id="reset" type="button" hidden>メールアドレスを入力し直す</button>
+  </form>
+  <p class="note">B! ID が保存するのは、メールアドレスだけです。パスワードは使いません。</p>
+</main>
+<footer>&copy; B! ID</footer>
+<script>
+  // Apps Script公開後に /exec URLへ差し替える
+  var API_URL = 'https://script.google.com/macros/s/ここにデプロイID/exec';
+  var params = new URLSearchParams(location.search);
+  var redirect = params.get('redirect');
+  var msg = document.getElementById('msg');
+  var form = document.getElementById('mail');
+  var emailEl = document.getElementById('email');
+  var codeEl = document.getElementById('code');
+  var codeRow = document.getElementById('codeRow');
+  var go = document.getElementById('go');
+  var resetBtn = document.getElementById('reset');
+  var step = 'email';
+  function say(text,isError){msg.textContent=text;msg.className='msg'+(isError?' error':'');}
+  function post(body){return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(function(r){return r.json();});}
+  function finish(res){
+    if(res.ok){say('ログインしました。移動します。');location.replace(res.redirect+'#bid_token='+res.token);}
+    else if(res.error==='redirect_not_allowed')say('このサービスは B! ID に登録されていません。',true);
+    else if(res.error==='invalid_code')say('認証コードが違うか、有効期限が切れています。',true);
+    else say('ログインできませんでした。もう一度お試しください。',true);
+  }
+  if(!redirect){say('ログイン元のサービスが指定されていません。サービスのページからやり直してください。',true);go.disabled=true;}
+  else {try{document.getElementById('target').textContent=new URL(redirect).host;}catch(e){}}
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();if(!redirect)return;
+    var email=emailEl.value.trim();if(!email){say('メールアドレスを入力してください。',true);emailEl.focus();return;}
+    go.disabled=true;
+    if(step==='email'){
+      say('送信しています。');
+      post({action:'request_code',email:email,redirect:redirect}).then(function(res){
+        if(res.ok){step='code';emailEl.readOnly=true;codeRow.hidden=false;resetBtn.hidden=false;go.textContent='ログイン';say(email+' に認証コードを送りました。届かないときは、迷惑メールフォルダもご確認ください。');codeEl.focus();}
+        else if(res.error==='invalid_email')say('メールアドレスの形式を確認してください。',true);
+        else if(res.error==='redirect_not_allowed')say('このサービスは B! ID に登録されていません。',true);
+        else say('ただいま送信できません。しばらくしてからお試しください。',true);
+      }).catch(function(){say('通信に失敗しました。時間をおいて、もう一度お試しください。',true);}).then(function(){go.disabled=false;});
+    }else{
+      var code=codeEl.value.trim();if(!/^\d{6}$/.test(code)){say('6桁の数字を入力してください。',true);go.disabled=false;codeEl.focus();return;}
+      say('確認しています。');
+      post({action:'verify_code',email:email,code:code,redirect:redirect}).then(finish).catch(function(){say('通信に失敗しました。時間をおいて、もう一度お試しください。',true);}).then(function(){go.disabled=false;});
+    }
+  });
+  resetBtn.addEventListener('click',function(){step='email';emailEl.readOnly=false;codeEl.value='';codeRow.hidden=true;resetBtn.hidden=true;go.textContent='認証コードを送る';say('');emailEl.focus();});
+</script>
+</body>
+</html>
