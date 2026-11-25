@@ -64,12 +64,13 @@ GitHub Pages(画面)と Google Apps Script(サーバー側)だけで動きます
 
 `services` シートに1行ずつ追加します。
 
-| id | name | urlPrefix | shareEmail |
+| serviceId | name | redirectUrl | active |
 |---|---|---|---|
-| sample | サンプル | https://ユーザー名.github.io/リポジトリ名/ | (空欄) |
+| kabuonrain | 株シミュレーター LIFE オンライン | https://bainarinoakaunto.github.io/Online-Stk-Simu/ | TRUE |
 
-- `urlPrefix` は最後を `/` にします。このURLで始まる戻り先だけが許可されます。
-- `shareEmail` に `TRUE` を入れたサービスにだけ、メールアドレスが渡されます。空欄なら、IDだけが渡されます。
+- `redirectUrl` はサービスのベースURLです。末尾に `/` を付けます。
+- `active` が `TRUE` のサービスだけログイン・新規登録を許可します。`FALSE` の場合は無効です。
+- このGSはメールアドレスをサービスへ渡さず、認証結果として `sub` と `userId` を返します。
 
 ### 7. 各サービスに組み込む
 
