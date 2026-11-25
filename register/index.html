@@ -11,13 +11,41 @@
 <div class="links">すでにアカウントをお持ちの方は <a href="../login/">ログイン</a></div></div><p class="home"><a href="../">ホームに戻る</a></p></main>
 <script>
 var API_URL='https://script.google.com/macros/s/ここにデプロイID/exec';
-var redirect=new URLSearchParams(location.search).get('redirect');var step=0;
+var redirect=new URLSearchParams(location.search).get('redirect');
+var step=0,ticket='';
 var form=document.getElementById('form'),email=document.getElementById('email'),code=document.getElementById('code'),box=document.getElementById('codeBox'),bid=document.getElementById('bid'),bidBox=document.getElementById('bidBox'),btn=document.getElementById('submit'),msg=document.getElementById('msg');
 document.getElementById('target').textContent=redirect?'登録後の移動先: '+new URL(redirect).host:'対応サービスから開いてください。';
 function say(s,e){msg.textContent=s;msg.className='msg'+(e?' error':'')}
 function api(v){return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(v)}).then(r=>r.json())}
-form.addEventListener('submit',function(e){e.preventDefault();if(!redirect){say('登録元のサービスが指定されていません。対応サービスから開いてください。',true);return}btn.disabled=true;
-if(step===0){say('登録用コードを送信しています…');api({action:'request_register_code',email:email.value.trim(),redirect:redirect}).then(function(r){if(r.ok){step=1;email.readOnly=true;box.hidden=false;bidBox.hidden=false;code.required=true;bid.required=true;btn.textContent='認証してB! IDを作成';say('認証コードを送信しました。コードと希望するB! IDを入力してください。');code.focus()}else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'送信できませんでした。時間をおいてお試しください。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
-else{say('アカウントを作成しています…');api({action:'verify_register_code',email:email.value.trim(),code:code.value.trim(),bid:bid.value.trim(),redirect:redirect}).then(function(r){if(r.ok){say('登録しました。移動します。');location.replace(r.redirect+'#bid_token='+r.token)}else if(r.error==='bid_taken')say('このB! IDはすでに使われています。別のIDを入力してください。',true);else if(r.error==='invalid_bid')say('B! IDは半角英数字と _ の4〜20文字で入力してください。',true);else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'認証コードが違うか、有効期限が切れています。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
+form.addEventListener('submit',function(e){
+ e.preventDefault();
+ if(!redirect){say('登録元のサービスが指定されていません。対応サービスから開いてください。',true);return}
+ btn.disabled=true;
+ if(step===0){
+  say('登録用コードを送信しています…');
+  api({action:'request_register_code',email:email.value.trim(),redirect:redirect}).then(function(r){
+   if(r.ok){step=1;email.readOnly=true;box.hidden=false;code.required=true;btn.textContent='メール認証';say('認証コードをメールで送信しました。');code.focus()}
+   else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'送信できませんでした。時間をおいてお試しください。',true)
+  }).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false);
+ }else if(step===1){
+  say('メールアドレスを確認しています…');
+  api({action:'verify_register_email',email:email.value.trim(),code:code.value.trim(),redirect:redirect}).then(function(r){
+   if(r.ok){
+    ticket=r.ticket;step=2;
+    // Remove the address and code from the page after successful verification.
+    email.value='';email.required=false;email.closest('.field').hidden=true;
+    code.value='';code.required=false;box.hidden=true;
+    bidBox.hidden=false;bid.required=true;btn.textContent='B! IDを設定して登録';say('メール認証が完了しました。希望するB! IDを設定してください。');bid.focus();
+   }else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'認証コードが違うか、有効期限が切れています。',true)
+  }).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false);
+ }else{
+  say('B! IDを登録しています…');
+  api({action:'complete_register',ticket:ticket,bid:bid.value.trim()}).then(function(r){
+   if(r.ok){ticket='';say('登録しました。移動します。');location.replace(r.redirect+'#bid_token='+r.token)}
+   else if(r.error==='bid_taken')say('このB! IDはすでに使われています。別のIDを入力してください。',true);
+   else if(r.error==='invalid_bid')say('B! IDは半角英数字と _ の4〜20文字で入力してください。',true);
+   else say('登録用の認証情報が期限切れです。最初からやり直してください。',true)
+  }).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false);
+ }
 });
 </script></body></html>
