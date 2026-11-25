@@ -6,17 +6,18 @@
 <p id="target" class="sub">登録後に戻るサービスを確認しています…</p>
 <form id="form"><div class="field"><label for="email">メールアドレス</label><input id="email" type="email" autocomplete="email" required></div>
 <div class="field" id="codeBox" hidden><label for="code">認証コード（6桁）</label><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>
+<div class="field" id="bidBox" hidden><label for="bid">希望するB! ID</label><input id="bid" type="text" autocomplete="username" minlength="4" maxlength="20" pattern="[A-Za-z0-9_]{4,20}" placeholder="例：bainari_01"><small style="color:#687583">半角英数字と _（アンダーバー）、4〜20文字</small></div>
 <p id="msg" class="msg" role="status" aria-live="polite"></p><button id="submit">認証コードを送る</button></form>
 <div class="links">すでにアカウントをお持ちの方は <a href="../login/">ログイン</a></div></div><p class="home"><a href="../">ホームに戻る</a></p></main>
 <script>
 var API_URL='https://script.google.com/macros/s/ここにデプロイID/exec';
 var redirect=new URLSearchParams(location.search).get('redirect');var step=0;
-var form=document.getElementById('form'),email=document.getElementById('email'),code=document.getElementById('code'),box=document.getElementById('codeBox'),btn=document.getElementById('submit'),msg=document.getElementById('msg');
+var form=document.getElementById('form'),email=document.getElementById('email'),code=document.getElementById('code'),box=document.getElementById('codeBox'),bid=document.getElementById('bid'),bidBox=document.getElementById('bidBox'),btn=document.getElementById('submit'),msg=document.getElementById('msg');
 document.getElementById('target').textContent=redirect?'登録後の移動先: '+new URL(redirect).host:'対応サービスから開いてください。';
 function say(s,e){msg.textContent=s;msg.className='msg'+(e?' error':'')}
 function api(v){return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(v)}).then(r=>r.json())}
 form.addEventListener('submit',function(e){e.preventDefault();if(!redirect){say('登録元のサービスが指定されていません。対応サービスから開いてください。',true);return}btn.disabled=true;
-if(step===0){say('登録用コードを送信しています…');api({action:'request_register_code',email:email.value.trim(),redirect:redirect}).then(function(r){if(r.ok){step=1;email.readOnly=true;box.hidden=false;btn.textContent='登録してログイン';say('認証コードをメールで送信しました。');code.focus()}else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'送信できませんでした。時間をおいてお試しください。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
-else{say('アカウントを作成しています…');api({action:'verify_register_code',email:email.value.trim(),code:code.value.trim(),redirect:redirect}).then(function(r){if(r.ok){say('登録しました。移動します。');location.replace(r.redirect+'#bid_token='+r.token)}else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'認証コードが違うか、有効期限が切れています。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
+if(step===0){say('登録用コードを送信しています…');api({action:'request_register_code',email:email.value.trim(),redirect:redirect}).then(function(r){if(r.ok){step=1;email.readOnly=true;box.hidden=false;bidBox.hidden=false;code.required=true;bid.required=true;btn.textContent='認証してB! IDを作成';say('認証コードを送信しました。コードと希望するB! IDを入力してください。');code.focus()}else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'送信できませんでした。時間をおいてお試しください。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
+else{say('アカウントを作成しています…');api({action:'verify_register_code',email:email.value.trim(),code:code.value.trim(),bid:bid.value.trim(),redirect:redirect}).then(function(r){if(r.ok){say('登録しました。移動します。');location.replace(r.redirect+'#bid_token='+r.token)}else if(r.error==='bid_taken')say('このB! IDはすでに使われています。別のIDを入力してください。',true);else if(r.error==='invalid_bid')say('B! IDは半角英数字と _ の4〜20文字で入力してください。',true);else say(r.error==='already_registered'?'このメールアドレスは登録済みです。ログインしてください。':'認証コードが違うか、有効期限が切れています。',true)}).catch(()=>say('通信に失敗しました。',true)).finally(()=>btn.disabled=false)}
 });
 </script></body></html>
