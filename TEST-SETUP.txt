@@ -1,0 +1,18 @@
+B! ID 公開ページのテスト設定
+
+公開リポジトリには、画面とクライアントJSのみを置きます。
+Code.gs は公開リポジトリに置かず、Google Apps Scriptのプロジェクト内で管理してください。
+
+1. GitHub Pages を main / root で有効にする
+2. 公開URLを確認する
+   - https://bainarinoakaunto.github.io/b-id/
+   - https://bainarinoakaunto.github.io/b-id/login/
+3. Apps Script の Code.gs を新規プロジェクトに貼り付け、setup を実行する
+4. ウェブアプリとしてデプロイし、発行された /exec URLを login/index.html と b-id.js の API_URL に設定する
+5. Apps Script の services シートにテストサービスを登録する
+
+テスト用サービス登録行:
+kabuonrain-test | 株シミュレーター LIFE（テスト） | https://bainarinoakaunto.github.io/Online-Stk-Simu-b-id-test/ | FALSE
+
+API_URL は未設定です。Apps Scriptのデプロイ前に認証メール送信を試さないでください。
+スプレッドシートは公開・共有しないでください。
